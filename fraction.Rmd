@@ -1,0 +1,149 @@
+---
+title: "fraction"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = F, warning = F)
+```
+Witam współstudentów :)
+
+Troche poszukałem i nie udało mi się znaleźć jednostek opisujących poszczególne zmienne naszego zbioru danych, natomiast chatGPT wygenerował nastepujące wynik zapytania. https://chatgpt.com/share/6ae39c33-3640-83eb-a2db-5f168c478194
+
+Po krótce: Jednostki laboratoryjne w tabeli są interpretacją opartą na typowych jednostkach klinicznych i zakresach wartości w tym zbiorze; dokumentacja UCI nie potwierdza ich wszystkich indywidualnie. Jeśli opisujesz je w pracy, najlepiej zaznaczyć, że są to jednostki przyjęte na podstawie interpretacji parametrów, a nie komplet jednostek jawnie podanych przez autorów danych.
+
+
+```{r}
+jednostki <- data.frame(
+  Zmienna = c(
+    "X", "Category", "Age", "Sex", "ALB", "ALP", "ALT",
+    "AST", "BIL", "CHE", "CHOL", "CREA", "GGT", "PROT"
+  ),
+  Opis = c(
+    "Identyfikator pacjenta",
+    "Kategoria diagnostyczna",
+    "Wiek pacjenta",
+    "Płeć pacjenta",
+    "Albumina",
+    "Fosfataza alkaliczna",
+    "Aminotransferaza alaninowa",
+    "Aminotransferaza asparaginianowa",
+    "Bilirubina",
+    "Cholinesteraza",
+    "Cholesterol całkowity",
+    "Kreatynina",
+    "Gamma-glutamylotransferaza",
+    "Białko całkowite"
+  ),
+  Jednostka = c(
+    "Brak (ID)",
+    "Brak (kategoria)",
+    "Lata",
+    "Brak (m/f)",
+    "g/L",
+    "U/L",
+    "U/L",
+    "U/L",
+    "µmol/L",
+    "kU/L",
+    "mmol/L",
+    "µmol/L",
+    "U/L",
+    "g/L"
+  )
+)
+
+knitr::kable(
+  jednostki,
+  caption = "Jednostki poszczególnych zmiennych",
+  align = "c"
+)
+
+
+cat("Ważne do projektu z analizy danych
+- U/L — jednostki aktywności enzymów na litr.
+- g/L — gramy na litr.
+- mmol/L — milimole na litr.
+- µmol/L — mikromole na litr.
+- kU/L — kilounity na litr.
+- Category to zmienna, którą możesz wykorzystać jako zmienną objaśnianą (target), jeśli chcesz przewidywać kategorię pacjenta na podstawie wyników badań.")
+
+```
+
+```{r}
+library(tidyverse)
+library(corrplot)
+library(readr)
+df <- read_csv("HepatitisCdata.csv")
+df <- df %>% select(Category, Age, Sex, ALB, ALP, ALT, AST, BIL, CHE, CHOL, CREA, GGT, PROT) %>% na.omit(df)
+
+# Wyświetlenie pierwszych 6 obserwacji
+head(df)
+
+# Wyświetlenie ostatnich 6 obserwacji
+tail(df)
+
+# Podstawowe informacje o zbiorze
+dim(df)       # Liczba wierszy i kolumn
+names(df)     # Nazwy zmiennych
+str(df)       # Typy zmiennych
+summary(df)   # Podstawowe statystyki opisowe
+
+```
+```{r}
+# Wykres liczebności kategorii
+ggplot(df, aes(x = Category)) +
+  geom_bar(fill = "steelblue") +
+  labs(
+    title = "Liczebność kategorii diagnostycznych",
+    x = "Kategoria diagnostyczna",
+    y = "Liczba pacjentów"
+  ) +
+  theme_minimal()
+
+# Wykres kategorii według płci
+ggplot(df, aes(x = Category, fill = Sex)) +
+  geom_bar(position = "dodge") +
+  labs(
+    title = "Kategorie diagnostyczne według płci",
+    x = "Kategoria diagnostyczna",
+    y = "Liczba pacjentów",
+    fill = "Płeć"
+  ) +
+  theme_minimal()
+
+```
+```{r}
+numeryczne <- df %>%
+  select(where(is.numeric))
+
+# Statystyki opisowe
+statystyki <- numeryczne %>%
+  summarise(
+    across(
+      everything(),
+      list(
+        srednia = ~mean(.x,),
+        mediana = ~median(.x,),
+        odch_std = ~sd(.x,),
+        minimum = ~min(.x,),
+        Q1 = ~quantile(.x, 0.25),
+        Q3 = ~quantile(.x, 0.75),
+        maksimum = ~max(.x)
+      )
+    )
+  )
+statystyki <- statystyki %>%
+  pivot_longer(
+    cols = everything(),
+    names_to = c("Zmienna", ".value"),
+    names_pattern = "^(.*)_(srednia|mediana|odch_std|minimum|Q1|Q3|maksimum)$"
+  )
+
+statystyki
+
+```
+
+
+
+
