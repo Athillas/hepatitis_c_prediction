@@ -3,3 +3,11 @@ title: "main"
 output: html_document
 ---
 
+```{r, include=F}
+knitr::opts_chunk$set(ECHO = F)
+library("dplyr")
+```
+
+```{r}
+data <- read.csv("HepatitisCdata.csv") |> select(-X) |> na.omit()
+```
