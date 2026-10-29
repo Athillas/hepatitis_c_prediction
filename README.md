@@ -6,40 +6,52 @@
 
 ### 2.1 Liczebność
 
-**Ogólna liczba obserwacji:** 615,
+**Ogólna liczba obserwacji:** 615.
 
-**Liczba obserwacji z brakującymi wartościami:** 26,
+**Liczba obserwacji z brakującymi wartościami:** 26.
 
-**Liczba obserwacji rozważanych w projekcie:** 589,
+**Liczba obserwacji rozważanych w projekcie:** 589.
 
-**Liczba cech:** 13,
+**Liczba cech:** 13.
 
 ### 2.2 Cechy zbioru danych
-**UWAGA!!!** Jednostki poszczególnych cech **nie pochodzą ze źródla** i są **wywnioskowane przez autora.**
-Ponieważ cechy [4:15] zbioru we źródle są podane bez jednostek pomiarowych, jednostki zostały wywnioskowane
+**UWAGA!!!** Jednostki poszczególnych cech **nie pochodzą ze źródła** i są **wywnioskowane przez autora.**
+Ponieważ cechy [4:15] zbioru w źródle są podane bez jednostek pomiarowych, jednostki zostały wywnioskowane
 na podstawie charakterystycznych poziomów poszczególnych wskaźników przy użyciu Sztucznej Inteligencji. [[użyty prompt]](#wywnioskowanie-jednostek)
 
-Z  [dokumentu, wprowadzającego do zbioru [1]](https://api.semanticscholar.org/CorpusID:55532259) wiadomo, że dane pochodzą z badań Wyższej Szkoły Medycznej Hannoweru,
+Z  [dokumentu, wprowadzającego do zbioru [1]](https://api.semanticscholar.org/CorpusID:55532259) wiadomo, że dane pochodzą z badań Wyższej Szkoły Medycznej Hanoweru,
 a szczególne pomiary cech krwi wykonano na analizatorze Roche Modular P800 (Hoffmann i in., *J Lab Precis Med*, 2018).
-W laboratoriach krajów Unii Europiejskiej standardem są jednostki układu SI.
+W laboratoriach krajów Unii Europejskiej standardem są jednostki układu SI.
 
 | Cecha | Opis | Jednostka | Przyjmowane wartości |
 |---|---|---|---|
 | Category | Diagnoza pacjenta | - | 0=Blood Donor, 0s=suspect Blood Donor, 1=Hepatitis, 2=Fibrosis, 3=Cirrhosis |
-| Age | Wiek pacjenta | Wiek w latach | [23, 77] |
-| Sex | Płec pacjenta | - | f- kobieta, m- mężczyzna |
-| ALB | Albumine | g/L | [14.9, 82.2] |
-| ALP | Alkaline phosphatase | U/L | [11.3, 417] |
-| ALT | Alanine Transaminase | U/L | [0.90, 325] |
-| AST | Aspartate Transaminase | U/L | [10.6, 324] |
-| BIL | Bilirubin | $\mu \text{mol/L}$ | [0.80, 209] |
-| CHE | Acetylcholinesterase | kU/L | [1.4, 16.4] |
-| CHOL | Cholesterol | mmol/L | [1.4, 9.7] |
-| CREA | Creatinine | $\mu \text{mol/L}$ | [8, 1079] |
-| GGT | Gamma-Glutamyl Transferase | U/L | [4.5, 651] |
-| PROT | Proteins | g/L | [44.8, 86.5] |
+| Age | Wiek pacjenta | lata | [23, 77] |
+| Sex | Płeć pacjenta | - | f- kobieta, m- mężczyzna |
+| ALB | Albumina | g/L | [14.9, 82.2] |
+| ALP | Fosfataza alkaliczna | U/L | [11.3, 417] |
+| ALT | Aminotransferaza alaninowa | U/L | [0.90, 325] |
+| AST | Aminotransferaza asparaginianowa | U/L | [10.6, 324] |
+| BIL | Bilirubina | $\mu \text{mol/L}$ | [0.80, 209] |
+| CHE | Cholinesteraza | kU/L | [1.4, 16.4] |
+| CHOL | Cholesterol całkowity | mmol/L | [1.4, 9.7] |
+| CREA | Kreatynina | $\mu \text{mol/L}$ | [8, 1079] |
+| GGT | Gamma-glutamylotransferaza | U/L | [4.5, 651] |
+| PROT | Białko całkowite | g/L | [44.8, 86.5] |
 
-### 2.3 Źródlo
+**Wyjaśnienie jednostek:**
+
+- U/L — jednostki aktywności enzymów na litr.
+
+- g/L — gramy na litr.
+
+- mmol/L — milimole na litr.
+
+- µmol/L — mikromole na litr.
+
+- kU/L — kilounity na litr.
+
+### 2.3 Źródło
 Lichtinghagen, R., Klawonn, F., & Hoffmann, G. (2020). HCV data [Dataset]. UCI Machine Learning Repository. https://doi.org/10.24432/C5D612.
 
 ## 5. Użyte prompty
@@ -53,16 +65,16 @@ Claude Sonnet 5.5, Medium Effort.
 ```
 https://www.kaggle.com/datasets/fedesoriano/hepatitis-c-dataset?resource=download
 
-In this dataset, which units are used to measure each respectful blood feature?
+In this dataset, which units are used to measure each respective blood feature?
 I'm interested in the columns from 5 to 14, which refer to laboratory data.
-I'll provide you a piece of .csv file values. Then, I want you to find the unit
+I'll provide you with a piece of a .csv file with values. Then, I want you to find the unit
 and explain each unit in detail for every feature.
-Find any relevant data about the units of measures, methodology or used hardware
-in the origin's introductory paper:
+Find any relevant data about the units of measurement, methodology or used hardware
+in the original introductory paper:
 https://jlpm.amegroups.org/article/view/4401/5425
 
-Here are some .csv values from the file, coming from the healthy patients.
-Infer the units comparing the actual values from the dataset and known
+Here are some .csv values from the file, coming from healthy patients.
+Infer the units by comparing the actual values from the dataset and known
 characteristic values for relevant blood measures:
 ```
 

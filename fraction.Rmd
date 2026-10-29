@@ -123,10 +123,10 @@ statystyki <- numeryczne %>%
     across(
       everything(),
       list(
-        srednia = ~mean(.x,),
-        mediana = ~median(.x,),
-        odch_std = ~sd(.x,),
-        minimum = ~min(.x,),
+        srednia = ~mean(.x),
+        mediana = ~median(.x),
+        odch_std = ~sd(.x),
+        minimum = ~min(.x),
         Q1 = ~quantile(.x, 0.25),
         Q3 = ~quantile(.x, 0.75),
         maksimum = ~max(.x)

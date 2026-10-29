@@ -361,25 +361,25 @@ display: none;
 <h2>2. Opis zbioru danych</h2>
 <div id="liczebność" class="section level3">
 <h3>2.1 Liczebność</h3>
-<p><strong>Ogólna liczba obserwacji:</strong> 615,</p>
-<p><strong>Liczba obserwacji z brakującymi wartościami:</strong> 26,</p>
-<p><strong>Liczba obserwacji rozważanych w projekcie:</strong> 589,</p>
-<p><strong>Liczba cech:</strong> 13,</p>
+<p><strong>Ogólna liczba obserwacji:</strong> 615.</p>
+<p><strong>Liczba obserwacji z brakującymi wartościami:</strong> 26.</p>
+<p><strong>Liczba obserwacji rozważanych w projekcie:</strong> 589.</p>
+<p><strong>Liczba cech:</strong> 13.</p>
 </div>
 <div id="cechy-zbioru-danych" class="section level3">
 <h3>2.2 Cechy zbioru danych</h3>
 <p><strong>UWAGA!!!</strong> Jednostki poszczególnych cech <strong>nie
-pochodzą ze źródla</strong> i są <strong>wywnioskowane przez
-autora.</strong> Ponieważ cechy [4:15] zbioru we źródle są podane bez
+pochodzą ze źródła</strong> i są <strong>wywnioskowane przez
+autora.</strong> Ponieważ cechy [4:15] zbioru w źródle są podane bez
 jednostek pomiarowych, jednostki zostały wywnioskowane na podstawie
 charakterystycznych poziomów poszczególnych wskaźników przy użyciu
 Sztucznej Inteligencji. <a href="#wywnioskowanie-jednostek">[użyty
 prompt]</a></p>
 <p>Z <a href="https://api.semanticscholar.org/CorpusID:55532259">dokumentu,
 wprowadzającego do zbioru [1]</a> wiadomo, że dane pochodzą z badań
-Wyższej Szkoły Medycznej Hannoweru, a szczególne pomiary cech krwi
+Wyższej Szkoły Medycznej Hanoweru, a szczególne pomiary cech krwi
 wykonano na analizatorze Roche Modular P800 (Hoffmann i in., <em>J Lab
-Precis Med</em>, 2018). W laboratoriach krajów Unii Europiejskiej
+Precis Med</em>, 2018). W laboratoriach krajów Unii Europejskiej
 standardem są jednostki układu SI.</p>
 <table>
 <colgroup>
@@ -407,80 +407,88 @@ standardem są jednostki układu SI.</p>
 <tr class="even">
 <td>Age</td>
 <td>Wiek pacjenta</td>
-<td>Wiek w latach</td>
+<td>lata</td>
 <td>[23, 77]</td>
 </tr>
 <tr class="odd">
 <td>Sex</td>
-<td>Płec pacjenta</td>
+<td>Płeć pacjenta</td>
 <td>-</td>
 <td>f- kobieta, m- mężczyzna</td>
 </tr>
 <tr class="even">
 <td>ALB</td>
-<td>Albumine</td>
+<td>Albumina</td>
 <td>g/L</td>
 <td>[14.9, 82.2]</td>
 </tr>
 <tr class="odd">
 <td>ALP</td>
-<td>Alkaline phosphatase</td>
+<td>Fosfataza alkaliczna</td>
 <td>U/L</td>
 <td>[11.3, 417]</td>
 </tr>
 <tr class="even">
 <td>ALT</td>
-<td>Alanine Transaminase</td>
+<td>Aminotransferaza alaninowa</td>
 <td>U/L</td>
 <td>[0.90, 325]</td>
 </tr>
 <tr class="odd">
 <td>AST</td>
-<td>Aspartate Transaminase</td>
+<td>Aminotransferaza asparaginianowa</td>
 <td>U/L</td>
 <td>[10.6, 324]</td>
 </tr>
 <tr class="even">
 <td>BIL</td>
-<td>Bilirubin</td>
+<td>Bilirubina</td>
 <td><span class="math inline">\(\mu \text{mol/L}\)</span></td>
 <td>[0.80, 209]</td>
 </tr>
 <tr class="odd">
 <td>CHE</td>
-<td>Acetylcholinesterase</td>
+<td>Cholinesteraza</td>
 <td>kU/L</td>
 <td>[1.4, 16.4]</td>
 </tr>
 <tr class="even">
 <td>CHOL</td>
-<td>Cholesterol</td>
+<td>Cholesterol całkowity</td>
 <td>mmol/L</td>
 <td>[1.4, 9.7]</td>
 </tr>
 <tr class="odd">
 <td>CREA</td>
-<td>Creatinine</td>
+<td>Kreatynina</td>
 <td><span class="math inline">\(\mu \text{mol/L}\)</span></td>
 <td>[8, 1079]</td>
 </tr>
 <tr class="even">
 <td>GGT</td>
-<td>Gamma-Glutamyl Transferase</td>
+<td>Gamma-glutamylotransferaza</td>
 <td>U/L</td>
 <td>[4.5, 651]</td>
 </tr>
 <tr class="odd">
 <td>PROT</td>
-<td>Proteins</td>
+<td>Białko całkowite</td>
 <td>g/L</td>
 <td>[44.8, 86.5]</td>
 </tr>
 </tbody>
 </table>
+<p><strong>Wyjaśnienie jednostek:</strong></p>
+<ul>
+<li><p>U/L — jednostki aktywności enzymów na litr.</p></li>
+<li><p>g/L — gramy na litr.</p></li>
+<li><p>mmol/L — milimole na litr.</p></li>
+<li><p>µmol/L — mikromole na litr.</p></li>
+<li><p>kU/L — kilounity na litr.</p></li>
+</ul>
 </div>
-<div id="źródlo" class="section level3">
-<h3>2.3 Źródlo</h3>
+<div id="źródło" class="section level3">
+<h3>2.3 Źródło</h3>
 <p>Lichtinghagen, R., Klawonn, F., &amp; Hoffmann, G. (2020). HCV data
 [Dataset]. UCI Machine Learning Repository. <a href="https://doi.org/10.24432/C5D612" class="uri">https://doi.org/10.24432/C5D612</a>.</p>
 </div>
@@ -497,16 +505,16 @@ standardem są jednostki układu SI.</p>
 <h4>5.1.2 Prompt</h4>
 <pre><code>https://www.kaggle.com/datasets/fedesoriano/hepatitis-c-dataset?resource=download
 
-In this dataset, which units are used to measure each respectful blood feature?
+In this dataset, which units are used to measure each respective blood feature?
 I&#39;m interested in the columns from 5 to 14, which refer to laboratory data.
-I&#39;ll provide you a piece of .csv file values. Then, I want you to find the unit
+I&#39;ll provide you with a piece of a .csv file with values. Then, I want you to find the unit
 and explain each unit in detail for every feature.
-Find any relevant data about the units of measures, methodology or used hardware
-in the origin&#39;s introductory paper:
+Find any relevant data about the units of measurement, methodology or used hardware
+in the original introductory paper:
 https://jlpm.amegroups.org/article/view/4401/5425
 
-Here are some .csv values from the file, coming from the healthy patients.
-Infer the units comparing the actual values from the dataset and known
+Here are some .csv values from the file, coming from healthy patients.
+Infer the units by comparing the actual values from the dataset and known
 characteristic values for relevant blood measures:</code></pre>
 <pre class="csv"><code>&quot;&quot;,&quot;Category&quot;,&quot;Age&quot;,&quot;Sex&quot;,&quot;ALB&quot;,&quot;ALP&quot;,&quot;ALT&quot;,&quot;AST&quot;,&quot;BIL&quot;,&quot;CHE&quot;,&quot;CHOL&quot;,&quot;CREA&quot;,&quot;GGT&quot;,&quot;PROT&quot;
 &quot;1&quot;,&quot;0=Blood Donor&quot;,32,&quot;m&quot;,38.5,52.5,7.7,22.1,7.5,6.93,3.23,106,12.1,69
