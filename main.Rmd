@@ -16,6 +16,7 @@ data <- read.csv("HepatitisCdata.csv") |> select(-X) |> na.omit()
 ```
 
 ## 2. Podstawowa transformacja
+### 2.1 Standaryzacja
 Standardyzujemy wszystkie zmienne numeryczne (cechy 4:14)
 ```{r}
 
@@ -26,6 +27,14 @@ for (i in 4:ncol(data))
   data[, i] <- (data[, i] - col_mean) / col_sd
 }
 
+```
+### 2.2 Uproszczenie wartości zmiennych kategorycznych
+```{r}
+data$Category[data$Category == "0=Blood Donor"]           = "0"
+data$Category[data$Category == "0s=suspect Blood Donor"]  = "0s"
+data$Category[data$Category == "1=Hepatitis"]             = "1"
+data$Category[data$Category == "2=Fibrosis"]              = "2"
+data$Category[data$Category == "3=Cirrhosis"]             = "3"
 ```
 
 ## 3. Analiza korelacji cech
@@ -42,7 +51,7 @@ chart.Correlation(data[,c("ALB", "ALP", "CHE", "BIL", "CHOL", "GGT", "PROT")], h
 cor.mat <- data[, 4:ncol(data)] |> cor_mat()
 cor.mat |> cor_plot()
 ```
-
+Hierachical Clustering
 ```{r}
 
 ```
