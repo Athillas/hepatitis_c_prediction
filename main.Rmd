@@ -6,8 +6,43 @@ output: html_document
 ```{r, include=F}
 knitr::opts_chunk$set(ECHO = F)
 library("dplyr")
+library("PerformanceAnalytics")
+library(rstatix)
+```
+
+## 1. Wczytywanie danych
+```{r}
+data <- read.csv("HepatitisCdata.csv") |> select(-X) |> na.omit()
+```
+
+## 2. Podstawowa transformacja
+Standardyzujemy wszystkie zmienne numeryczne (cechy 4:14)
+```{r}
+
+for (i in 4:ncol(data))
+{
+  col_mean <- mean(data[, i])
+  col_sd <- sd(data[, i])
+  data[, i] <- (data[, i] - col_mean) / col_sd
+}
+
+```
+
+## 3. Analiza korelacji cech
+```{r}
+chart.Correlation(data[,4:ncol(data)], histogram=T, pch="+")
+``` 
+
+## 4. 
+```{r}
+chart.Correlation(data[,c("ALB", "ALP", "CHE", "BIL", "CHOL", "GGT", "PROT")], histogram=T, pch="+")
 ```
 
 ```{r}
-data <- read.csv("HepatitisCdata.csv") |> select(-X) |> na.omit()
+cor.mat <- data[, 4:ncol(data)] |> cor_mat()
+cor.mat |> cor_plot()
+```
+
+```{r}
+
 ```

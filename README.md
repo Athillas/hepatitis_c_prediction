@@ -27,7 +27,7 @@ W laboratoriach krajów Unii Europejskiej standardem są jednostki układu SI.
 |---|---|---|---|
 | Category | Diagnoza pacjenta | - | 0=Blood Donor, 0s=suspect Blood Donor, 1=Hepatitis, 2=Fibrosis, 3=Cirrhosis |
 | Age | Wiek pacjenta | lata | [23, 77] |
-| Sex | Płeć pacjenta | - | f- kobieta, m- mężczyzna |
+| Sex | Płeć pacjenta | - | f, m |
 | ALB | Albumina | g/L | [14.9, 82.2] |
 | ALP | Fosfataza alkaliczna | U/L | [11.3, 417] |
 | ALT | Aminotransferaza alaninowa | U/L | [0.90, 325] |
@@ -49,7 +49,7 @@ W laboratoriach krajów Unii Europejskiej standardem są jednostki układu SI.
 
 - µmol/L — mikromole na litr.
 
-- kU/L — kilounity na litr.
+- kU/L — kilojednostek na litr.
 
 ### 2.3 Źródło
 Lichtinghagen, R., Klawonn, F., & Hoffmann, G. (2020). HCV data [Dataset]. UCI Machine Learning Repository. https://doi.org/10.24432/C5D612.
