@@ -5,9 +5,12 @@ output: html_document
 
 ```{r, include=F}
 knitr::opts_chunk$set(ECHO = F)
-library("dplyr")
-library("PerformanceAnalytics")
+library(dplyr)
+library(PerformanceAnalytics)
+library(isotree)
 library(rstatix)
+library(MLmetrics)
+library(kableExtra)
 ```
 
 ## 1. Wczytywanie danych
@@ -51,7 +54,40 @@ chart.Correlation(data[,c("ALB", "ALP", "CHE", "BIL", "CHOL", "GGT", "PROT")], h
 cor.mat <- data[, 4:ncol(data)] |> cor_mat()
 cor.mat |> cor_plot()
 ```
+## 5. Podział na zbiory treningowe i testowe.
+Wybieramy **tylko** zdrowych pacjentów.
+```{r}
+set.seed(42)
+
+data$Sex <- as.factor(data$Sex)
+zeros <- which(data$Category == "0")
+idx   <- sample(zeros, size = round(0.8 * length(zeros)))
+
+feature_cols <- setdiff(names(data), "Category")
+
+data_Train <- data[idx, feature_cols]
+data_Test  <- data[-idx, ]
+
+# labels aligned with the test set (1 = anomaly, 0 = healthy)
+is_outlier <- as.integer(data_Test$Category != "0")
+data_Test  <- data_Test[, feature_cols]
+
+stopifnot(nrow(data_Test) == length(is_outlier))
+
+table(is_outlier)
+summary(data_Train)
+summary(data_Test)
+```
+## 6. Uczenie lasu losowego 
+```{r}
+set.seed(1)
+
+iso_forest <- isolation.forest(data_Train)
+scores     <- predict(iso_forest, data_Test)
+stopifnot(length(scores) == length(is_outlier))
+```
+
 Hierachical Clustering
 ```{r}
-
+print(AUC(scores, is_outlier))
 ```
