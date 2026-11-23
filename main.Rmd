@@ -11,6 +11,7 @@ library(isotree)
 library(rstatix)
 library(MLmetrics)
 library(kableExtra)
+library(h2o)
 ```
 
 ## 1. Wczytywanie danych
@@ -22,28 +23,23 @@ data <- read.csv("HepatitisCdata.csv") |> select(-X) |> na.omit()
 ### 2.1 Standaryzacja
 Standardyzujemy wszystkie zmienne numeryczne (cechy 4:14)
 ```{r}
-
-for (i in 4:ncol(data))
-{
-  col_mean <- mean(data[, i])
-  col_sd <- sd(data[, i])
-  data[, i] <- (data[, i] - col_mean) / col_sd
-}
+data <- data |>
+  mutate(across(4:ncol(data), ~ as.vector(scale(.))))
 
 ```
 ### 2.2 Uproszczenie wartości zmiennych kategorycznych
 ```{r}
-data$Category[data$Category == "0=Blood Donor"]           = "0"
-data$Category[data$Category == "0s=suspect Blood Donor"]  = "0s"
-data$Category[data$Category == "1=Hepatitis"]             = "1"
-data$Category[data$Category == "2=Fibrosis"]              = "2"
-data$Category[data$Category == "3=Cirrhosis"]             = "3"
+data$Category <- sub("=.*", "", data$Category)
 ```
 
 ## 3. Analiza korelacji cech
 ```{r}
 chart.Correlation(data[,4:ncol(data)], histogram=T, pch="+")
 ``` 
+
+```{r}
+sus_data <- data |> filter(Category == "0s")
+```
 
 ## 4. 
 ```{r}
@@ -55,7 +51,9 @@ cor.mat <- data[, 4:ncol(data)] |> cor_mat()
 cor.mat |> cor_plot()
 ```
 ## 5. Podział na zbiory treningowe i testowe.
-Wybieramy **tylko** zdrowych pacjentów.
+### 5.1 Dla Autoencoder:
+Wybieramy część **tylko** zdrowych pacjentów.
+
 ```{r}
 set.seed(42)
 
@@ -65,29 +63,98 @@ idx   <- sample(zeros, size = round(0.8 * length(zeros)))
 
 feature_cols <- setdiff(names(data), "Category")
 
-data_Train <- data[idx, feature_cols]
-data_Test  <- data[-idx, ]
+data_Train_AENC <- data[idx, feature_cols]
+data_Test_AENC  <- data[-idx, ]
 
 # labels aligned with the test set (1 = anomaly, 0 = healthy)
-is_outlier <- as.integer(data_Test$Category != "0")
-data_Test  <- data_Test[, feature_cols]
+is_outlier_AENC <- as.integer(data_Test_AENC$Category != "0")
+data_Test_AENC  <- data_Test_AENC[, feature_cols]
 
-stopifnot(nrow(data_Test) == length(is_outlier))
+stopifnot(nrow(data_Test_AENC) == length(is_outlier_AENC))
 
-table(is_outlier)
-summary(data_Train)
-summary(data_Test)
+table(is_outlier_AENC)
+summary(data_Train_AENC)
+summary(data_Test_AENC)
 ```
+
+### 5.2 Dla iForest:
+Wybieramy część **wszystkich** pacjentów.
+
+```{r}
+# train test split, stratify
+set.seed(42)
+not_sus <- which(data$Category != "0s")
+idx   <- sample(not_sus, size = round(0.8 * length(not_sus)))
+#idx <- sample(nrow(data), size=round(0.8 * nrow(data)))
+
+
+data_Train_iFor <- data[idx, feature_cols]
+data_Test_iFor_Cat  <- data[-idx, ]          # keep Category for labels
+data_Test_iFor  <- data_Test_iFor_Cat[, feature_cols]
+is_outlier_iFor <- as.integer(data_Test_iFor$Category != "0")
+
+#stopifnot(nrow(data_Train_iFor) + nrow(data_Test_iFor) == n)
+```
+
 ## 6. Uczenie lasu losowego 
 ```{r}
-set.seed(1)
+set.seed(42)
 
-iso_forest <- isolation.forest(data_Train)
-scores     <- predict(iso_forest, data_Test)
-stopifnot(length(scores) == length(is_outlier))
+iso_forest <- isolation.forest(data_Train_iFor)
+scores     <- predict(iso_forest, data_Test_iFor)
+avg_depths <- predict(iso_forest, data_Test_iFor, type="avg_depth")
 ```
 
 Hierachical Clustering
+
 ```{r}
-print(AUC(scores, is_outlier))
+scores_df <- data.frame(
+  Category = data_Test_iFor_Cat$Category,
+  Score    = scores,
+  AvgDepth = avg_depths
+)
+
+summary(scores_df)
+
+scores_df |> group_by(Category) |> summarize(mean_score = mean(Score), mean_avg_depth = mean(AvgDepth), n = n())
+```
+
+```{r}
+library(isotree); library(pROC); library(PRROC); library(dplyr)
+
+lab <- data$Category
+nz  <- which(lab != "0s")                 # trainable rows
+K <- 5; R <- 10
+oof <- matrix(NA_real_, nrow(data), R)    # out-of-fold scores
+
+for (r in 1:R) {
+  set.seed(r)
+  # stratify on Category (0 vs 1,2,3) so rare classes spread across folds
+  folds <- caret::createFolds(lab[nz], k = K)
+  s0s <- numeric(0)
+  for (f in folds) {
+    tr  <- nz[-f]; te <- nz[f]
+    m   <- isolation.forest(data[tr, feature_cols], ntrees = 500, seed = r)
+    oof[te, r] <- predict(m, data[te, feature_cols])
+    # score 0s with this fold's model too, then average
+    s0s <- rbind(s0s, predict(m, data[lab == "0s", feature_cols]))
+  }
+  oof[lab == "0s", r] <- colMeans(s0s)
+}
+
+score <- rowMeans(oof)                    # or evaluate per repeat and report the spread
+
+# Confirmed anomalies (1-3) vs normal (0)
+sel <- lab != "0s"
+y   <- as.integer(lab[sel] != "0")
+roc_obj <- roc(y, score[sel]); ci.auc(roc_obj)
+pr.curve(scores.class0 = score[sel][y == 1],
+         scores.class1 = score[sel][y == 0], curve = TRUE)
+```
+
+## 7. Uczenie autoencoder
+```{r}
+h2o.no_progress()
+h2o.init(max_mem_size = "5g")
+
 ```
